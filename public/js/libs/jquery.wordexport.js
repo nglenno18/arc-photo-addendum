@@ -28,14 +28,20 @@ if (typeof jQuery !== "undefined" && typeof saveAs !== "undefined") {
             var img = markup.find('img');
             for (var i = 0; i < img.length; i++) {
                 // Calculate dimensions of output image
+                // if(img[i].height > img[i].width){
+                //   var h = Math.min(img[i].height, options.maxWidth/2);
+                //   var w = img[i].width * (h / img[i].height);
+                // }else{
+                //   var w = Math.min(img[i].width, options.maxWidth/2);
+                //   var h = img[i].height * (w / img[i].width);
+                // }
                 if(img[i].height > img[i].width){
-                  var h = Math.min(img[i].height, options.maxWidth/2);
+                  var h = Math.min(img[i].height, options.maxWidth);
                   var w = img[i].width * (h / img[i].height);
                 }else{
-                  var w = Math.min(img[i].width, options.maxWidth/2);
+                  var w = Math.min(img[i].width, options.maxWidth);
                   var h = img[i].height * (w / img[i].width);
                 }
-
                 // Create canvas for converting image to data URL
                 var canvas = document.createElement("CANVAS");
                 canvas.width = w;
