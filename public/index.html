@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html><head>
+    <title>ARC Addendum</title>
+
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link href="images/favicon.ico" rel="icon" type="image/x-icon" />
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/libs/jquery-3.1.1.min.js"></script>
+    <script src="js/libs/delivery.js"></script>
+    <script src="js/libs/FileSaver.js"/>
+    <script src="js/libs/jquery.wordexport.js"></script>
+    <script src="https://cdn.jsdelivr.net/clipboard.js/1.6.0/clipboard.min.js"></script>
+    <script src="js/index.js"></script>
+    <!-- <script src="js/controls.js"></script> -->
+    <script src="js/keycontrols.js"></script>
+
+    <!-- <script src="/js/libs/bootstrap.min.js"></script> -->
+</head>
+<body>
+  <a name="top"></a>
+
+  <div id="page-container" class="box-shadow" onclick="clickListener()">
+      <h1>Photo Addendum     </h1><img title="Visit us at arcvendormgmt.com"float="right" id="logo" src="images/arclogo.png"></img>
+      <label id="property-label" placeholder="Property Address" contenteditable="true" placeholder="Type Property Address..."
+      title="Type Name of Property">Type Property Address</label>
+      <p id="instruction"><sup>Click a box, launch a file dialog, select a photo, add description</sup></p>
+      <!-- <p id="property"></p> -->
+      <!-- <sup id="date" value="new Date();"></sup> -->
+      <button class="printdoc" id="printws" title="Save As Word Document"><img src="images/word.png"></img></button>
+      <button id="printpdf" onClick="printPage(this)" title="(Ctrl+S) Print Page --> Save As PDF"><img id="topdf_icon" src="images/topdf_grey.png"/></button>
+      <button id="topgen" class="genbutton" float="right" onclick="$('#uploadpdf').click()" title="upload your pdf to generate a downloadable link"><img src="images/generate_link.png" title="upload your pdf to generate a downloadable link"/></button>
+
+      <div id="au">
+        <span class="row">
+          <div class="container1">
+            <!-- <a class="box1" id="box1" onclick="selectBox(this)"> -->
+            <a class="box1" id="box1" title="Upload a photo">
+              <img class="img" src="images/temp2.png" align="center" width="270px" height="270px" object-fit="contain"></img>
+            </a>
+            <input class="fd1" id="singlefd1" type="file" accept=".png,.jpg,.JPG,.PNG"/>
+            <p class="fileID" color="#CCCCCC"></p>
+            <input type="textarea" float="left" title="Add a photo description"></input>
+          </div>
+
+          <span class="space">.</span>
+          <div class="container2">
+            <a class="box2"  id="box2" title="Upload a photo"><!--onclick="fileDialog.click()"-->
+              <img class="img" src="images/temp2.png" align="center"></img>
+            </a>
+            <input class="fd1" id="singlefd2" type="file" accept=".png,.jpg,.JPG,.PNG"/>
+            <p class="fileID" color="#CCCCCC"></p>
+            <input class="textA" type="textarea" float="right" title="Add a photo description"></input>
+          </div>
+        </span>
+        <div class="break" >
+          <br>
+          <p margin-left="30px" float="right"><br></p>
+          <br>
+        </div>
+    </div>
+    <a href="#top" class="bottom" id="backtotop">Back to Top</a>
+    <label class="bottom" id="photocount">0 <span>images</span></label>
+  </div>
+
+
+  <div id="mid-body">
+    <div class="clear-float"></div>
+    <a id="add-row" title="(CTRL+down) Add an empty row" data-scrollTo="print"><img id="downarrow" src="images/expandarrow.png"/></img></a>
+    <a id="delete-row" title="(CTRL+up) Remove the bottom row"><img  id="uparrow" src="images/uparrow.png"/></img></a>
+    <a id="add-images" title="(CTRL+M) Upload multiple images" onclick="$('#fd').click()"><img id="add-icon" src="images/multi-select.png"/></img></a>
+    <input id="fd" type="file" accept=".png,.jpg,.JPG,.PNG" multiple/>
+
+  </div>
+
+</body>
+<footer>
+  <!-- <button id="pdf" display="none">Generate PDF</button> -->
+  <button id="print" onClick="printPage(this)" title="(Ctrl+S) Print Page --> Save As PDF"><img id="topdf_icon" src="images/topdf_grey.png"/><span>Print to PDF</span></button>
+  <a name=info><img id="info-icon" src="images/info.png"/></a>
+  <span id="bubble" class="hide"><span>Will launch the browser's Print Page. Select
+    "Save as PDF" for the Print Destination</span></span>
+
+  <!-- <button class="tooltip" id="tooltipButton" title="this is the tooltip!">JPEG</button> -->
+
+  <!-- <button id="jpeg">JPEG</button>
+  <button id="png" >PNG</button> -->
+  <input id="singlefd" type="file" accept=".png,.jpg,.JPG,.PNG"/>
+  <button id="btngen" class="genbutton" onclick="$('#uploadpdf').click()" title="upload your pdf to generate a downloadable link"><img src="images/generate_link.png" title="upload your pdf to generate a downloadable link"/></button>
+  <!-- <input id="pdfupload" type="file" accept=".png,.jpg,.JPG,.PNG,.PDF,.pdf" title="upload your pdf to generate a downloadable link"/> -->
+  <button id="btncopy" title="Copy Link!" class="hide" data-clipboard-action="copy" data-clipboard-target="#tarea" onclick="clipboard()"><img src="images/copy_link.png"/></button><textarea id="tarea" class="hide">this is from an invisible text area</textarea>
+  <label type="text" title="Copy PDF download link" id="linklabel" data-clipboard-action="copy" data-clipboard-target="#tarea" class="hide"></label>
+  <form id="uploadform" action="/upload" enctype="multipart/form-data" method="post" target="uploader_iframe">
+    <input id="uploadpdf" type="file" name="upload">
+    <input type="submit" value="Upload">
+  </form>
+  <label id="progress" class="hide">.</label>
+  <iframe id="uploader_iframe" name="uploader_iframe" style="display: none;"></iframe>
+
+  <div id="word_export_div">
+  <br/>
+  </div>
+
+  <script>
+    function clipboard(){
+      $('#tarea').removeClass("hide");
+
+      $('#tarea').addClass("highlighted");
+      document.getElementById("tarea").value = $('#linklabel').text();
+      var clipboard = new Clipboard('#btncopy');
+      clipboard.on('success', function(e) {
+          console.info('Action:', e.action);
+          console.info('Text:', e.text);
+          console.info('Trigger:', e.trigger);
+
+          e.clearSelection();
+          $('#linklabel').addClass("clicked");
+          $('#linklabel').addClass("hide");
+          $('#linklabel').prop('title', 'Copied!');
+
+          $('#tarea').prop('title', 'Copied!');
+          $('#tarea').removeClass("hide");
+          $('#tarea').css("background", "#333");
+          $('#tarea').fadeTo('fast', 0.0).fadeTo('slow', 1.0);
+      });
+      clipboard.on('error', function(e) {
+          console.error('Action:', e.action);
+          console.error('Trigger:', e.trigger);
+      });
+      var i = 0;
+      setTimeout(function(){
+        $('#tarea').removeClass("highlighted");
+      }, 100);
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.debug.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js"></script>
+  <!-- <script src="/js/libs/dom-to-image.js"></script> -->
+  <script>
+  var printPage = function(ev){
+    console.log('Print page was clicked', ev.id);
+    var property = $('#property-label')[0].textContent;
+    console.log(property);
+    var lastBox = "";
+    var lastContainer = "";
+    if(property == 'Type Property Address'){
+      var p = prompt('Enter Property Address: ', 'type address here');
+      console.log('PROMPT RESPONSE: ', p);
+      if(!p){
+        return p;
+      }else{
+        $('#property-label')[0].textContent = p;
+        $('#property-label').css("color", "#6bcee5");
+        property = p;
+      }
+    }
+
+    $("#page-container").removeClass("box-shadow");
+    $('#mid-body').addClass("hide");
+    var instruction = document.getElementById("instruction");
+    instruction = instruction.getElementsByTagName("sup");
+    console.log('Instructions: ', instruction);
+    var insContent = instruction[0].textContent;
+    console.log('Instructional content: ', insContent);
+    instruction[0].textContent = '';
+    lastBox = document.getElementsByClassName("box2");
+    var isEmpty = lastBox[lastBox.length-1].getElementsByTagName("img")[0].src;
+    if(isEmpty.substring(isEmpty.lastIndexOf("/")+1) === "temp2.png"){
+      console.log('\n\nHIDE LAST BOX');
+      lastBox = lastBox[lastBox.length-1].id;
+      console.log(document.getElementById(lastBox).parentElement);
+      lastContainer = document.getElementById(lastBox).parentElement;
+      lastContainer.id = "txtID";
+      $('#'+ lastContainer.id).addClass("hide");
+    }
+    console.log(lastBox);
+    console.log('IS EMPTY: ', isEmpty);
+    if(!$('#bubble').hasClass("hide")){
+      $('#bubble').addClass("hide");
+    }
+    $('footer').addClass("hide");
+    $('#photocount').addClass("hide");
+    $('#backtotop').addClass("hide");
+    $('#printws').addClass("hide");
+    $('#printpdf').addClass("hide");
+    $('#topgen').addClass("hide");
+    document.title = property;
+
+    window.print();
+    // window.title = 'ARC Addendum';
+    $("#page-container").addClass("box-shadow");
+    $('#mid-body').removeClass("hide");
+    $('#'+lastContainer.id).removeClass("hide");
+    $('#'+lastContainer.id).removeAttr("id");
+    instruction[0].textContent = insContent;
+    $('footer').removeClass("hide");
+    $('#photocount').removeClass("hide");
+    $('#backtotop').removeClass("hide");
+    $('#printws').removeClass("hide");
+    $('#printpdf').removeClass("hide");
+    $('#topgen').removeClass("hide");
+
+
+    $('#add-row').click();
+    $('#delete-row').click();
+  }
+  </script>
+
+  <script>
+    var arrayWithElements = new Array();
+
+    var clickListener = function(e) {
+        var clickedElement;
+        if(e == null) {
+            clickedElement = event.srcElement;
+        } else {
+            clickedElement = e.target;
+        }
+        // arrayWithElements.push($(clickedElement).cssSelectorAsString()); // <====
+        console.log(clickedElement);
+        // console.log(clickedElement.hasClass('box'));
+        var dialog = clickedElement.parentNode.parentNode;
+        dialog = dialog.getElementsByClassName("fd1")[0];
+        console.log('FILE DIALOG TO USE: ', dialog.id);
+        console.log(clickedElement.getElementsByClassName("box"));
+        console.log('ELEMENT: ', clickedElement.parentNode);
+        var ele = clickedElement.parentNode;
+        var isBox = ele.className;
+        console.log('BOX: ', isBox);
+
+        if(isBox === "box1" || isBox === "box2"){
+          var chooser = $('#singlefd');
+          console.log('CHOOSER:', chooser);
+          chooser.unbind('change');
+          chooser.change(function(evt) {
+            console.log($(this).val());
+            var file = evt.currentTarget.files[0];
+            console.log('FILE: ', file);
+            var i = URL.createObjectURL(file);
+            $('#'+ ele.id).html('<img class="uploads" src="' + i + '"/>');
+          });
+            chooser.trigger('click');
+          }
+        }
+  </script>
+
+    <script src="js/libs/jquery.wordexport.js"></script>
+    <script>
+      // document.getElementById('printws').on('click', function(event){
+      //   $('#page-container').wordExport();
+      // });
+
+      $('.printdoc').click(function(event){
+        console.log('clicked');
+        // var div = document.createElement('div');
+        var div = document.getElementById('word_export_div');
+
+        // div.id = 'word_export_div';
+        var str = '';
+        var array = document.querySelectorAll('.uploads');
+        console.log(array);
+        div.innerHTML = '';
+
+        for(var t = 0; t < array.length; t++){
+          var dupNode = array[t].cloneNode(true);
+          console.log(dupNode.style);
+          // if(t%2 === 0){
+          //   dupNode.style.marginLeft = "20px";
+          //   console.log(dupNode.style.marginLeft);
+          // }else{
+          //   dupNode.style.marginLeft = "20px";
+          // }
+          div.appendChild(dupNode);
+          str = str + array[t];
+        }
+        console.log(div);
+
+        $('#word_export_div').wordExport();
+        // $('#page-container').wordExport();
+        $('#word_export_div').html('');
+
+        $('h1').removeClass("hide");
+        $('#logo').removeClass("hide");
+        $('#instruction').removeClass("hide");
+
+        // THIS SHOULD actually rebuild the addendum and match photo sizes before exporting.
+      });
+    </script>
+</footer>
+
+</html>
